@@ -1,54 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Builder</title>
-    <link rel="stylesheet" href="style.css">
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dynamic Resume Builder</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
 
-</head>
-<body>
+    <section>
+        <form id="resume-form">
+            <h3>Personal Information</h3>
+            <input type="text" id="name" placeholder="Enter your name*" required />
+            <input type="email" id="email" placeholder="Enter your email*" required />
+            <h3>Profile Picture</h3>
+            <input type="file" id="profile-image" accept="image/*" />
+            <h3>Education</h3>
+            <input type="text" id="education-field" placeholder="Enter your education (e.g., University, Degree)" />
 
-<section class="Profile">
+            <h3>Work Experience</h3>
+            <input type="text" id="work-field" placeholder="Enter your work experience (e.g., Company, Role)"/>
 
-<div id="personal-info">
-  <h1>Wajid Ali</h1>
-  <p>Contact Details</p>
-  <img src="images/profile.JPG" alt="Profile Picture" />
-</div>
+            <h3>Skills*</h3>
+            <input type="text" id="skills-field" placeholder="Enter skills separated by commas" required />
 
-<div id="education">
-  <h2>Education</h2>
-  <ul>
-    <li><strong>Iqra University</strong> -BSCS (2021)</li>
-  </ul>
-</div>
+            <button type="submit">Generate Resume</button>
+        </form>
+    </section>
 
-<div id="skills">
-  <h2>Skills</h2>
-  <ul>
-    <li>Next JS</li>
-    <li>React</li>
-    <li>Node Js</li>
-    <li>TypeScript</li>
-    <li>HTML</li>
-    <li>CSS</li>
-    <li>Javascript</li>
-  </ul>
-</div>
+    <section class="Profile" id="resume">
+        <div id="personal-info">
+            <h1 id="name-display" contenteditable="true">Your Name</h1>
+            <p id="email-display" contenteditable="true">Your Email</p>
+            <img id="profile-img" src="images/profile.JPG" alt="Profile Picture" />
+        </div>
 
-<div id="work-experience">
-  <h2>Work Experience</h2>
-  <ul>
-    <li><strong>Console FSPS</strong> -MERN Stack Developer (2024)</li>
-  </ul>
-</div>
+        <div id="education">
+            <h2>Education</h2>
+            <ul id="education-list" contenteditable="true">
+            </ul>
+        </div>
 
-</section>
+        <div id="skills">
+            <h2>Skills</h2>
+            <ul id="skills-list" contenteditable="true">
+            </ul>
+        </div>
 
-<button id="toggle-skills">Toggle Skills</button>
+        <div id="work-experience">
+            <h2>Work Experience</h2>
+            <ul id="work-list" contenteditable="true">
+            </ul>
+        </div>
 
-<script src="app.js"></script>
+        <button id="toggle-skills">Toggle Skills</button>
 
-</body>
-</html>
+        
+        <div id="resume-links">
+            <div id="shareLink">Share Link </div>
+            <button id="download-pdf">Download PDF</button>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+    </body>
+    </html>
