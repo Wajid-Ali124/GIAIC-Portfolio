@@ -1,11 +1,9 @@
-// Function to toggle visibility of resume sections
 function toggleVisibility(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
         section.style.display = section.style.display === "none" ? "block" : "none";
     }
 }
-// Event listener for toggling skills section visibility
 document.getElementById("toggle-skills")?.addEventListener("click", () => toggleVisibility("skills"));
 function updateResumeDisplay(data) {
     document.getElementById("name-display").textContent = data.name;
@@ -21,35 +19,6 @@ function updateResumeDisplay(data) {
     const skillsList = document.getElementById("skills-list");
     skillsList.innerHTML = data.skills.map(skill => `<li>${skill.trim()}</li>`).join('');
 }
-// Event listener for the resume form submission
-document.getElementById("resume-form")?.addEventListener("submit", function (event) {
-    event.preventDefault();
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const education = document.getElementById("education-field").value;
-    const work = document.getElementById("work-field").value;
-    const skills = document.getElementById("skills-field").value.split(',');
-    const imageInput = document.getElementById("profile-image");
-    let imageUrl = null;
-    if (imageInput.files && imageInput.files[0]) {
-        const file = imageInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            imageUrl = e.target?.result;
-            const resumeData = {
-                name,
-                email,
-                education,
-                work,
-                skills,
-                image: imageUrl
-            };
-            updateResumeDisplay(resumeData);
-        };
-        reader.readAsDataURL(file);
-    }
-});
-// Function to get query parameters from the URL
 function getQueryParams() {
     const urlParams = new URLSearchParams(window.location.search);
     return {
@@ -61,7 +30,6 @@ function getQueryParams() {
         image: urlParams.get('image')
     };
 }
-// Function to update the resume display from URL parameters
 function updateResumeDisplayFromUrl() {
     const params = getQueryParams();
     if (params.name) {
@@ -87,8 +55,26 @@ function updateResumeDisplayFromUrl() {
         profileImage.src = params.image;
     }
 }
-// Event listener to share resume as a URL when form is submitted
-document.getElementById("resume-form")?.addEventListener("submit", function (event) {
+const CLOUDINARY_CLOUD_NAME = 'drvxekfod';
+const CLOUDINARY_UPLOAD_PRESET = 'GIAIC-Portfolio';
+async function uploadImageToCloudinary(file) {
+    const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+    });
+    const data = await response.json();
+    if (data.secure_url) {
+        return data.secure_url;
+    }
+    else {
+        throw new Error('Image upload failed');
+    }
+}
+document.getElementById("resume-form")?.addEventListener("submit", async function (event) {
     event.preventDefault();
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
@@ -97,62 +83,54 @@ document.getElementById("resume-form")?.addEventListener("submit", function (eve
     const skills = document.getElementById("skills-field").value.split(',');
     const imageInput = document.getElementById("profile-image");
     let imageUrl = null;
-    let shareableLink;
-    if (imageInput.files && imageInput.files[0]) {
-        const file = imageInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            imageUrl = e.target?.result;
-            shareableLink = `https://giaic-portfolio-pi.vercel.app/?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&education=${encodeURIComponent(education)}&work=${encodeURIComponent(work)}&skills=${encodeURIComponent(skills.join(','))}&image=${encodeURIComponent(imageUrl || '')}`;
-            const resumeData = {
-                name,
-                email,
-                education,
-                work,
-                skills,
-                image: imageUrl
-            };
-            updateResumeDisplay(resumeData);
-        };
-        const shareLink = document.getElementById("shareLink");
-        shareLink.innerHTML = `<a href="${shareableLink}">${shareableLink}</a>`;
-        reader.readAsDataURL(file);
+    let shareableLink = '';
+    const submitButton = document.getElementById("generate-resume-btn");
+    const loader = document.createElement("img");
+    loader.src = "images/loader.gif";
+    loader.alt = "Loading...";
+    loader.style.width = "25px";
+    submitButton.disabled = true;
+    submitButton.style.backgroundColor = "#ffff";
+    submitButton.innerHTML = `${loader.outerHTML}`;
+    try {
+        if (imageInput.files && imageInput.files[0]) {
+            imageUrl = await uploadImageToCloudinary(imageInput.files[0]);
+        }
     }
-    else {
-        shareableLink = `https://giaic-portfolio-pi.vercel.app/?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&education=${encodeURIComponent(education)}&work=${encodeURIComponent(work)}&skills=${encodeURIComponent(skills.join(','))}&image=${encodeURIComponent(imageUrl || '')}`;
-        const shareLink = document.getElementById("shareLink");
-        shareLink.innerHTML = `<a href="${shareableLink}">${shareableLink}</a>`;
-        const resumeData = {
-            name,
-            email,
-            education,
-            work,
-            skills,
-            image: null,
-        };
-        updateResumeDisplay(resumeData);
+    catch (error) {
+        console.error("Image upload error:", error);
     }
+    shareableLink = `https://giaic-portfolio-pi.vercel.app/?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&education=${encodeURIComponent(education)}&work=${encodeURIComponent(work)}&skills=${encodeURIComponent(skills.join(','))}&image=${encodeURIComponent(imageUrl || '')}`;
+    const shareLink = document.getElementById("shareLink");
+    shareLink.innerHTML = `<a href="${shareableLink}" target="_blank">${shareableLink}</a>`;
+    const resumeData = {
+        name,
+        email,
+        education,
+        work,
+        skills,
+        image: imageUrl,
+    };
+    updateResumeDisplay(resumeData);
+    submitButton.disabled = false;
+    submitButton.innerHTML = "Generate Resume";
+    submitButton.style.backgroundColor = "#33cc99";
 });
-// Event listener to download the resume as a PDF
 document.getElementById("download-pdf")?.addEventListener("click", () => {
     const element = document.getElementById("resume");
     if (element) {
-        // Get the buttons and hide them
         const buttons = document.querySelectorAll("#download-pdf, #toggle-skills");
         buttons.forEach(button => {
             button.style.display = "none";
         });
-        // Use html2pdf to download the resume as a PDF
         html2pdf()
             .from(element)
             .save("resume.pdf")
             .then(() => {
-            // After the PDF is saved, show the buttons again
             buttons.forEach(button => {
                 button.style.display = "inline-block";
             });
         });
     }
 });
-// Call this function on page load to apply the data
 window.onload = updateResumeDisplayFromUrl;

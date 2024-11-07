@@ -12,50 +12,66 @@ body {
   align-items: center;
   background-color: #f4f9ff;
   padding: 20px;
+  flex-direction: column;
 }
 
 #profile-img {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   display: block;
-  margin: 10px;
+  margin: 10px auto;
 }
 
 .Profile {
   display: flex;
   flex-direction: column;
-  gap: 2em;
+  gap: 1.5em;
   background-color: #ffffff;
   margin: 15px 0;
-  padding: 20px;
+  padding: 15px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-left: 6px solid #0074cc;
-  width: 25vw;
+  width: 90vw;
+  max-width: 600px;
 }
 
 #personal-info h1 {
-  font-size: 2em;
+  font-size: 1.8em;
   color: #0074cc;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 #personal-info p {
   color: #444;
   font-size: 1em;
+  text-align: center;
 }
 
-#personal-info img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+#profile-image {
   display: block;
-  margin: 10px;
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  background-color: #f4f9ff;
+  color: #333;
+  border: 2px solid #33cc99;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  margin-bottom: 20px;
 }
+
+#profile-image:hover {
+  background-color: #e0f7f1;
+  border-color: #28a87a;
+}
+
 
 #education h2, #skills h2, #work-experience h2 {
-  font-size: 1.5em;
+  font-size: 1.4em;
   color: #33cc99;
   margin-bottom: 10px;
 }
@@ -95,6 +111,7 @@ form {
   margin-top: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90vw;
   max-width: 600px;
 }
 
@@ -133,22 +150,43 @@ form button:hover {
 }
 
 #resume-links input {
-  width: 80%;
+  width: 90%;
   padding: 10px;
   margin-bottom: 10px;
   font-size: 1em;
 }
 
-#shareLink a{
-  display: inline-block; /* Optional: Adjust based on layout needs */
-  max-width: 100%;       /* Keeps the text within the container */
-  overflow: hidden;      /* Hides any overflow */
-  text-overflow: ellipsis; /* Adds "..." for overflowed text */
+#shareLink a {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 #resume-links button {
-  width: 80%;
+  width: 90%;
   padding: 10px;
   font-size: 1em;
+}
+
+@media (min-width: 768px) {
+  .Profile {
+    width: 50vw;
+  }
+  form {
+    width: 50vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    flex-direction: row;
+  }
+  .Profile {
+    width: 30vw;
+  }
+  form {
+    width: 30vw;
+  }
 }
